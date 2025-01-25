@@ -11,6 +11,12 @@ obj/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+*.runtimeconfig.dev.json
+*.deps.json
+*.dll
+*.exe
+*.pdb
+*.mdb
 
 # Ignore NuGet packages
 *.nupkg
@@ -36,6 +42,11 @@ project.assets.json
 node_modules/
 build/
 dist/
+coverage/
+.npm/
+.eslintcache
+.stylelintcache
+.parcel-cache/
 
 # Ignore environment variable files
 .env
@@ -52,3 +63,36 @@ yarn-error.log*
 # Ignore miscellaneous files
 .DS_Store
 Thumbs.db
+Desktop.ini
+*.log
+*.log.*
+
+# Ignore temporary files
+~$*
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*.err
+
+# Ignore IDE-specific files
+*.iml
+*.ipr
+*.iws
+
+# Ignore debugging or profiling files
+*.profraw
+*.gcda
+*.gcno
+*.lcov
+
+# Ignore test coverage results
+coverage/
+.nyc_output/
+jest-coverage/
+
+# Ignore other common files
+*.lock
+.idea_modules/
+.history/
