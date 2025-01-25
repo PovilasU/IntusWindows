@@ -134,12 +134,13 @@ const RectangleResizer: React.FC = () => {
   };
 
   return (
-    <div>
+    <div data-testid="rectangle-resizer">
       <h1>Rectangle Resizer</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div
         ref={rectangleRef}
         onMouseDown={handleDrag}
+        data-testid="rectangle"
         style={{
           position: "absolute",
           left: position.x,
@@ -155,14 +156,17 @@ const RectangleResizer: React.FC = () => {
         </svg>
         <div
           onMouseDown={(e) => handleMouseDown(e, "top-left")}
+          data-testid="handle-top-left"
           style={{ ...handleStyle, left: -5, top: -5, cursor: "nwse-resize" }}
         />
         <div
           onMouseDown={(e) => handleMouseDown(e, "top-right")}
+          data-testid="handle-top-right"
           style={{ ...handleStyle, right: -5, top: -5, cursor: "nesw-resize" }}
         />
         <div
           onMouseDown={(e) => handleMouseDown(e, "bottom-left")}
+          data-testid="handle-bottom-left"
           style={{
             ...handleStyle,
             left: -5,
@@ -172,6 +176,7 @@ const RectangleResizer: React.FC = () => {
         />
         <div
           onMouseDown={(e) => handleMouseDown(e, "bottom-right")}
+          data-testid="handle-bottom-right"
           style={{
             ...handleStyle,
             right: -5,
@@ -180,7 +185,9 @@ const RectangleResizer: React.FC = () => {
           }}
         />
       </div>
-      <p>Perimeter: {2 * (dimensions.width + dimensions.height)} px</p>
+      <p data-testid="perimeter">
+        Perimeter: {2 * (dimensions.width + dimensions.height)} px
+      </p>
       {loading && <p>Validating...</p>}
       <div style={{ marginTop: "10px" }}>
         <label style={{ marginRight: "10px" }}>
@@ -190,6 +197,7 @@ const RectangleResizer: React.FC = () => {
             name="width"
             value={dimensions.width}
             onChange={handleInputChange}
+            data-testid="input-width"
             style={{ marginLeft: "5px" }}
           />{" "}
           px
@@ -201,6 +209,7 @@ const RectangleResizer: React.FC = () => {
             name="height"
             value={dimensions.height}
             onChange={handleInputChange}
+            data-testid="input-height"
             style={{ marginLeft: "5px" }}
           />{" "}
           px
