@@ -27,9 +27,7 @@ const RectangleResizer: React.FC = () => {
   useEffect(() => {
     const fetchDimensions = async () => {
       try {
-        const response = await axios.get<Rectangle>(
-          "https://localhost:7221/api/rectangle"
-        );
+        const response = await axios.get<Rectangle>("/rectangle");
         setDimensions(response.data);
       } catch (err) {
         console.error("Error fetching dimensions:", err);
@@ -82,16 +80,10 @@ const RectangleResizer: React.FC = () => {
 
       try {
         // Validate dimensions
-        await axios.post(
-          "https://localhost:7221/api/rectangle/validate",
-          dimensions
-        );
+        await axios.post("/rectangle/validate", dimensions);
 
         // Update dimensions in the backend
-        await axios.post(
-          "https://localhost:7221/api/rectangle/update",
-          dimensions
-        );
+        await axios.post("/rectangle/update", dimensions);
       } catch (err: any) {
         setError(err.response?.data || "An error occurred.");
       } finally {
