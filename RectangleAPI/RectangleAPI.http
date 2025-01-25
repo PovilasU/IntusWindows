@@ -1,0 +1,6 @@
+@RectangleAPI_HostAddress = http://localhost:5229
+
+GET {{RectangleAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
