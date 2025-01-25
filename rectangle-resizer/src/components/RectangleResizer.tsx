@@ -1,6 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "../services/api";
 import { Rectangle } from "../types/Rectangle";
+import { Properties } from "csstype";
+
+const handleStyle: Properties<string | number> = {
+  position: "absolute",
+  width: 10,
+  height: 10,
+  backgroundColor: "lightblue",
+  border: "1px solid grey",
+  borderRadius: "50%",
+  cursor: "nwse-resize",
+};
 
 const RectangleResizer: React.FC = () => {
   const [dimensions, setDimensions] = useState<Rectangle>({
@@ -136,57 +147,27 @@ const RectangleResizer: React.FC = () => {
         </svg>
         <div
           onMouseDown={(e) => handleMouseDown(e, "top-left")}
-          style={{
-            position: "absolute",
-            left: -5,
-            top: -5,
-            width: 10,
-            height: 10,
-            backgroundColor: "lightblue",
-            border: "1px solid grey",
-            borderRadius: "50%",
-            cursor: "nwse-resize",
-          }}
+          style={{ ...handleStyle, left: -5, top: -5, cursor: "nwse-resize" }}
         />
         <div
           onMouseDown={(e) => handleMouseDown(e, "top-right")}
-          style={{
-            position: "absolute",
-            right: -5,
-            top: -5,
-            width: 10,
-            height: 10,
-            backgroundColor: "lightblue",
-            border: "1px solid grey",
-            borderRadius: "50%",
-            cursor: "nesw-resize",
-          }}
+          style={{ ...handleStyle, right: -5, top: -5, cursor: "nesw-resize" }}
         />
         <div
           onMouseDown={(e) => handleMouseDown(e, "bottom-left")}
           style={{
-            position: "absolute",
+            ...handleStyle,
             left: -5,
             bottom: -5,
-            width: 10,
-            height: 10,
-            backgroundColor: "lightblue",
-            border: "1px solid grey",
-            borderRadius: "50%",
             cursor: "nesw-resize",
           }}
         />
         <div
           onMouseDown={(e) => handleMouseDown(e, "bottom-right")}
           style={{
-            position: "absolute",
+            ...handleStyle,
             right: -5,
             bottom: -5,
-            width: 10,
-            height: 10,
-            backgroundColor: "lightblue",
-            border: "1px solid grey",
-            borderRadius: "50%",
             cursor: "nwse-resize",
           }}
         />
