@@ -29,13 +29,15 @@ const RectangleResizer: React.FC = () => {
     height: 50,
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string>(""); // Initialize with an empty string
   const rectangleRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   // Fetch initial dimensions from the API
   useEffect(() => {
     const fetchDimensions = async () => {
+      setLoading(true);
+      setError("");
       try {
         const response = await axios.get<Rectangle>("/rectangle");
         setDimensions(response.data);
@@ -43,15 +45,19 @@ const RectangleResizer: React.FC = () => {
         setError(
           "Failed to load initial rectangle dimensions. Please try again."
         );
+        console.error("Error fetching dimensions:", err);
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchDimensions();
   }, []);
 
   // Function to handle API updates with error handling
   const updateDimensions = async (newDimensions: Rectangle) => {
     setLoading(true);
-    setError(null);
+    setError("");
     try {
       // Validate dimensions
       await axios.post("/rectangle/validate", newDimensions);
@@ -64,6 +70,7 @@ const RectangleResizer: React.FC = () => {
       setError(
         err.response?.data || "An error occurred while updating dimensions."
       );
+      console.error("Error updating dimensions:", err);
     } finally {
       setLoading(false);
     }
@@ -155,19 +162,50 @@ const RectangleResizer: React.FC = () => {
     <div
       data-testid="rectangle-resizer"
       aria-labelledby="rectangle-resizer-header"
+      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
-      <h1 id="rectangle-resizer-header">Rectangle Resizer</h1>
-      {error && (
-        <p role="alert" style={{ color: "red" }}>
+      <div style={{ marginBottom: "20px" }}>
+        <h1 id="rectangle-resizer-header">Rectangle Resizer</h1>
+        <p role="alert" style={{ color: "red", minHeight: "1em" }}>
           {error}
         </p>
-      )}
+        <p style={{ minHeight: "1em" }}>{loading && "Loading..."}</p>
+        <div style={{ marginTop: "10px" }}>
+          <label style={{ marginRight: "10px" }}>
+            Width:
+            <input
+              type="number"
+              name="width"
+              value={dimensions.width}
+              onChange={handleInputChange}
+              data-testid="input-width"
+              style={{ marginLeft: "5px" }}
+            />{" "}
+            px
+          </label>
+          <label>
+            Height:
+            <input
+              type="number"
+              name="height"
+              value={dimensions.height}
+              onChange={handleInputChange}
+              data-testid="input-height"
+              style={{ marginLeft: "5px" }}
+            />{" "}
+            px
+          </label>
+        </div>
+        <p data-testid="perimeter">
+          Perimeter: {2 * (dimensions.width + dimensions.height)} px
+        </p>
+      </div>
       <div
         ref={rectangleRef}
         onMouseDown={handleDrag}
         data-testid="rectangle"
         style={{
-          position: "absolute",
+          position: "relative",
           left: position.x,
           top: position.y,
           width: dimensions.width,
@@ -203,32 +241,6 @@ const RectangleResizer: React.FC = () => {
           onMouseDown={(e) => handleMouseDown(e, "bottom-right")}
           style={{ ...handleStyle, right: -5, bottom: -5 }}
         />
-      </div>
-      <p data-testid="perimeter">
-        Perimeter: {2 * (dimensions.width + dimensions.height)} px
-      </p>
-      {loading && <p>Validating...</p>}
-      <div style={{ marginTop: "10px" }}>
-        <label>
-          Width:
-          <input
-            type="number"
-            name="width"
-            value={dimensions.width}
-            onChange={handleInputChange}
-            data-testid="input-width"
-          />
-        </label>
-        <label>
-          Height:
-          <input
-            type="number"
-            name="height"
-            value={dimensions.height}
-            onChange={handleInputChange}
-            data-testid="input-height"
-          />
-        </label>
       </div>
     </div>
   );
