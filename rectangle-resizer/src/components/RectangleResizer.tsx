@@ -164,12 +164,13 @@ const RectangleResizer: React.FC = () => {
           top: position.y,
           width: dimensions.width,
           height: dimensions.height,
-          border: "2px solid blue",
+          border: `2px solid ${error ? "red" : "blue"}`,
+          backgroundColor: error ? "lightcoral" : "lightblue",
           cursor: "move",
         }}
       >
         <svg width="100%" height="100%" role="img">
-          <rect width="100%" height="100%" fill="lightblue" />
+          <rect width="100%" height="100%" fill="transparent" />
         </svg>
         <div
           onMouseDown={(e) => handleMouseDown(e, "top-left")}

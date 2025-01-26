@@ -98,3 +98,7 @@ http://localhost:3000
 ## Job Interview Task
 
 This project was created as part of a job interview task to demonstrate proficiency in React, C#, and API integration.
+
+## Tests
+
+Automated tests were written for this project to ensure the functionality of the components and API interactions. The tests cover rendering, user interactions, and API calls.
