@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "../services/api";
 import { Rectangle } from "../types/Rectangle";
 import { Properties } from "csstype";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./RectangleResizer.css";
+import "./RectangleResizer.css"; // Import custom CSS
 
 // Styles for resizing handles
 const handleStyle: Properties<string | number> = {
@@ -14,6 +14,15 @@ const handleStyle: Properties<string | number> = {
   border: "1px solid grey",
   borderRadius: "50%",
   cursor: "nwse-resize",
+};
+
+// Debounce utility
+const debounce = (func: (...args: any[]) => void, wait: number) => {
+  let timeout: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
 };
 
 const RectangleResizer: React.FC = () => {
@@ -69,6 +78,12 @@ const RectangleResizer: React.FC = () => {
     }
   };
 
+  const debouncedUpdateDimensions = useCallback(
+    debounce(updateDimensions, 500),
+    []
+  );
+
+  // Handle rectangle resizing
   const handleMouseDown = (e: React.MouseEvent, direction: string) => {
     e.stopPropagation();
     const startX = e.clientX;
@@ -76,8 +91,6 @@ const RectangleResizer: React.FC = () => {
     const startWidth = dimensions.width;
     const startHeight = dimensions.height;
     const startPos = { x: position.x, y: position.y };
-
-    let finalDimensions = { ...dimensions };
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
       let newWidth = startWidth;
@@ -98,21 +111,17 @@ const RectangleResizer: React.FC = () => {
         newY = startPos.y + (moveEvent.clientY - startY);
       }
 
-      finalDimensions = {
+      setDimensions({
         width: Math.max(10, newWidth),
         height: Math.max(10, newHeight),
-      };
-
-      setDimensions(finalDimensions);
+      });
       setPosition({ x: newX, y: newY });
+      debouncedUpdateDimensions({ width: newWidth, height: newHeight });
     };
 
     const handleMouseUp = () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
-
-      // Pass the final dimensions to the API
-      updateDimensions(finalDimensions);
     };
 
     document.addEventListener("mousemove", handleMouseMove);
@@ -134,9 +143,6 @@ const RectangleResizer: React.FC = () => {
     const handleMouseUp = () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
-
-      // Update position only after drag is complete, if needed
-      console.log("Drag completed:", position);
     };
 
     document.addEventListener("mousemove", handleMouseMove);
@@ -151,13 +157,51 @@ const RectangleResizer: React.FC = () => {
       [name]: Math.max(10, Number(value)),
     };
     setDimensions(newDimensions);
-
-    // Validate and update on direct input change
-    updateDimensions(newDimensions);
+    debouncedUpdateDimensions(newDimensions);
   };
 
   return (
     <div className="rectangle-resizer-container">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <a className="navbar-brand" href="#">
+          Rectangle Resizer
+        </a>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav">
+            <li className="nav-item active">
+              <a className="nav-link" href="#">
+                Home <span className="sr-only">(current)</span>
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="#">
+                Features
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="#">
+                Pricing
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link disabled" href="#" aria-disabled="true">
+                Disabled
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
       <div className="container mt-5">
         <div className="card border-0">
           <div className="card-body">

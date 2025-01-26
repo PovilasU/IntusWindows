@@ -1,0 +1,5 @@
+.rectangle-resizer-container {
+    background: url('https://sketch.io/sketchpad/assets/images/bg.png') repeat;
+    min-height: 100vh;
+    padding-top: 56px; /* Adjust for navbar height */
+  }
