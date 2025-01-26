@@ -3,6 +3,7 @@ import axios from "../services/api";
 import { Rectangle } from "../types/Rectangle";
 import { Properties } from "csstype";
 
+// Styles for resizing handles
 const handleStyle: Properties<string | number> = {
   position: "absolute",
   width: 10,
@@ -13,7 +14,7 @@ const handleStyle: Properties<string | number> = {
   cursor: "nwse-resize",
 };
 
-// Debounce function
+// Debounce utility
 const debounce = (func: (...args: any[]) => void, wait: number) => {
   let timeout: NodeJS.Timeout;
   return (...args: any[]) => {
@@ -39,14 +40,15 @@ const RectangleResizer: React.FC = () => {
         const response = await axios.get<Rectangle>("/rectangle");
         setDimensions(response.data);
       } catch (err) {
-        console.error("Error fetching dimensions:", err);
+        setError(
+          "Failed to load initial rectangle dimensions. Please try again."
+        );
       }
     };
-
     fetchDimensions();
   }, []);
 
-  // Debounced function to update dimensions in the backend
+  // Function to handle API updates with error handling
   const updateDimensions = async (newDimensions: Rectangle) => {
     setLoading(true);
     setError(null);
@@ -57,10 +59,11 @@ const RectangleResizer: React.FC = () => {
       // Update dimensions in the backend
       await axios.post("/rectangle/update", newDimensions);
 
-      // Update dimensions state only if validation is successful
       setDimensions(newDimensions);
     } catch (err: any) {
-      setError(err.response?.data || "An error occurred.");
+      setError(
+        err.response?.data || "An error occurred while updating dimensions."
+      );
     } finally {
       setLoading(false);
     }
@@ -71,7 +74,7 @@ const RectangleResizer: React.FC = () => {
     []
   );
 
-  // Handle resizing the rectangle
+  // Handle rectangle resizing
   const handleMouseDown = (e: React.MouseEvent, direction: string) => {
     e.stopPropagation();
     const startX = e.clientX;
@@ -86,12 +89,10 @@ const RectangleResizer: React.FC = () => {
       let newX = startPos.x;
       let newY = startPos.y;
 
-      if (direction.includes("right")) {
+      if (direction.includes("right"))
         newWidth = startWidth + (moveEvent.clientX - startX);
-      }
-      if (direction.includes("bottom")) {
+      if (direction.includes("bottom"))
         newHeight = startHeight + (moveEvent.clientY - startY);
-      }
       if (direction.includes("left")) {
         newWidth = startWidth - (moveEvent.clientX - startX);
         newX = startPos.x + (moveEvent.clientX - startX);
@@ -101,7 +102,10 @@ const RectangleResizer: React.FC = () => {
         newY = startPos.y + (moveEvent.clientY - startY);
       }
 
-      setDimensions({ width: newWidth, height: newHeight });
+      setDimensions({
+        width: Math.max(10, newWidth),
+        height: Math.max(10, newHeight),
+      });
       setPosition({ x: newX, y: newY });
       debouncedUpdateDimensions({ width: newWidth, height: newHeight });
     };
@@ -115,7 +119,7 @@ const RectangleResizer: React.FC = () => {
     document.addEventListener("mouseup", handleMouseUp);
   };
 
-  // Handle dragging the rectangle
+  // Handle rectangle dragging
   const handleDrag = (e: React.MouseEvent) => {
     const startX = e.clientX;
     const startY = e.clientY;
@@ -136,17 +140,28 @@ const RectangleResizer: React.FC = () => {
     document.addEventListener("mouseup", handleMouseUp);
   };
 
-  // Handle input change
+  // Handle direct input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const newDimensions = { ...dimensions, [name]: Number(value) };
+    const newDimensions = {
+      ...dimensions,
+      [name]: Math.max(10, Number(value)),
+    };
+    setDimensions(newDimensions);
     debouncedUpdateDimensions(newDimensions);
   };
 
   return (
-    <div data-testid="rectangle-resizer">
-      <h1>Rectangle Resizer</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <div
+      data-testid="rectangle-resizer"
+      aria-labelledby="rectangle-resizer-header"
+    >
+      <h1 id="rectangle-resizer-header">Rectangle Resizer</h1>
+      {error && (
+        <p role="alert" style={{ color: "red" }}>
+          {error}
+        </p>
+      )}
       <div
         ref={rectangleRef}
         onMouseDown={handleDrag}
@@ -161,39 +176,32 @@ const RectangleResizer: React.FC = () => {
           backgroundColor: error ? "lightcoral" : "lightblue",
           cursor: "move",
         }}
+        role="region"
+        aria-label={`Rectangle at ${position.x}, ${position.y} with width ${dimensions.width}px and height ${dimensions.height}px`}
       >
-        <svg width="100%" height="100%" role="img">
+        <svg
+          width="100%"
+          height="100%"
+          role="img"
+          aria-label="Resizable rectangle"
+        >
           <rect width="100%" height="100%" fill="transparent" />
         </svg>
         <div
           onMouseDown={(e) => handleMouseDown(e, "top-left")}
-          data-testid="handle-top-left"
-          style={{ ...handleStyle, left: -5, top: -5, cursor: "nwse-resize" }}
+          style={{ ...handleStyle, left: -5, top: -5 }}
         />
         <div
           onMouseDown={(e) => handleMouseDown(e, "top-right")}
-          data-testid="handle-top-right"
-          style={{ ...handleStyle, right: -5, top: -5, cursor: "nesw-resize" }}
+          style={{ ...handleStyle, right: -5, top: -5 }}
         />
         <div
           onMouseDown={(e) => handleMouseDown(e, "bottom-left")}
-          data-testid="handle-bottom-left"
-          style={{
-            ...handleStyle,
-            left: -5,
-            bottom: -5,
-            cursor: "nesw-resize",
-          }}
+          style={{ ...handleStyle, left: -5, bottom: -5 }}
         />
         <div
           onMouseDown={(e) => handleMouseDown(e, "bottom-right")}
-          data-testid="handle-bottom-right"
-          style={{
-            ...handleStyle,
-            right: -5,
-            bottom: -5,
-            cursor: "nwse-resize",
-          }}
+          style={{ ...handleStyle, right: -5, bottom: -5 }}
         />
       </div>
       <p data-testid="perimeter">
@@ -201,7 +209,7 @@ const RectangleResizer: React.FC = () => {
       </p>
       {loading && <p>Validating...</p>}
       <div style={{ marginTop: "10px" }}>
-        <label style={{ marginRight: "10px" }}>
+        <label>
           Width:
           <input
             type="number"
@@ -209,9 +217,7 @@ const RectangleResizer: React.FC = () => {
             value={dimensions.width}
             onChange={handleInputChange}
             data-testid="input-width"
-            style={{ marginLeft: "5px" }}
-          />{" "}
-          px
+          />
         </label>
         <label>
           Height:
@@ -221,9 +227,7 @@ const RectangleResizer: React.FC = () => {
             value={dimensions.height}
             onChange={handleInputChange}
             data-testid="input-height"
-            style={{ marginLeft: "5px" }}
-          />{" "}
-          px
+          />
         </label>
       </div>
     </div>
