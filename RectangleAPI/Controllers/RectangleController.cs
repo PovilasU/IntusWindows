@@ -19,7 +19,8 @@ namespace RectangleAPI.Controllers
         [HttpPost("validate")]
         public async Task<IActionResult> ValidateDimensions([FromBody] RectangleDto rectangle)
         {
-            await Task.Delay(10000); // Simulate long processing
+           // await Task.Delay(10000); // Simulate long processing
+            await Task.Delay(2000); // Simulate long processing
             if (rectangle.Width > rectangle.Height)
                 return BadRequest("Width cannot exceed height.");
             return Ok("Valid dimensions.");

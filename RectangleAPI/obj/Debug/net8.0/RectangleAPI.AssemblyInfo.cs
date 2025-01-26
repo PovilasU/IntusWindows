@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RectangleAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4739e742b0ab4e625d419c8ba5fcbdbf4b958ea0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a50aed5183b7a780af4b1923d250d38e569dfd3e")]
 [assembly: System.Reflection.AssemblyProductAttribute("RectangleAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RectangleAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

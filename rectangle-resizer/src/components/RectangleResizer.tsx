@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "../services/api";
 import { Rectangle } from "../types/Rectangle";
 import { Properties } from "csstype";
@@ -11,6 +11,15 @@ const handleStyle: Properties<string | number> = {
   border: "1px solid grey",
   borderRadius: "50%",
   cursor: "nwse-resize",
+};
+
+// Debounce function
+const debounce = (func: (...args: any[]) => void, wait: number) => {
+  let timeout: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
 };
 
 const RectangleResizer: React.FC = () => {
@@ -38,6 +47,35 @@ const RectangleResizer: React.FC = () => {
 
     fetchDimensions();
   }, []);
+
+  // Debounced function to update dimensions in the backend
+  const updateDimensions = async (newDimensions: Rectangle) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Validate dimensions
+      await axios.post(
+        "https://localhost:7221/api/rectangle/validate",
+        newDimensions
+      );
+
+      // Update dimensions in the backend
+      await axios.post(
+        "https://localhost:7221/api/rectangle/update",
+        newDimensions
+      );
+    } catch (err: any) {
+      setError(err.response?.data || "An error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const debouncedUpdateDimensions = useCallback(
+    debounce(updateDimensions, 500),
+    []
+  );
 
   // Handle resizing the rectangle
   const handleMouseDown = (e: React.MouseEvent, direction: string) => {
@@ -71,32 +109,12 @@ const RectangleResizer: React.FC = () => {
 
       setDimensions({ width: newWidth, height: newHeight });
       setPosition({ x: newX, y: newY });
+      debouncedUpdateDimensions({ width: newWidth, height: newHeight });
     };
 
-    const handleMouseUp = async () => {
+    const handleMouseUp = () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
-
-      setLoading(true);
-      setError(null);
-
-      try {
-        // Validate dimensions
-        await axios.post(
-          "https://localhost:7221/api/rectangle/validate",
-          dimensions
-        );
-
-        // Update dimensions in the backend
-        await axios.post(
-          "https://localhost:7221/api/rectangle/update",
-          dimensions
-        );
-      } catch (err: any) {
-        setError(err.response?.data || "An error occurred.");
-      } finally {
-        setLoading(false);
-      }
     };
 
     document.addEventListener("mousemove", handleMouseMove);
@@ -127,10 +145,9 @@ const RectangleResizer: React.FC = () => {
   // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setDimensions((prev) => ({
-      ...prev,
-      [name]: Number(value),
-    }));
+    const newDimensions = { ...dimensions, [name]: Number(value) };
+    setDimensions(newDimensions);
+    debouncedUpdateDimensions(newDimensions);
   };
 
   return (
