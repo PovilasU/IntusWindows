@@ -1,15 +1,14 @@
-// import { useState } from "react";
-// import reactLogo from "./assets/react.svg";
-// import viteLogo from "/vite.svg";
-// import "./App.css";
-
 import React from "react";
 import RectangleResizer from "./components/RectangleResizer";
 
 const App: React.FC = () => {
   return (
-    <div>
-      <RectangleResizer />
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-8">
+          <RectangleResizer />
+        </div>
+      </div>
     </div>
   );
 };

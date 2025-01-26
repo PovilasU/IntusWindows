@@ -162,57 +162,59 @@ const RectangleResizer: React.FC = () => {
     <div
       data-testid="rectangle-resizer"
       aria-labelledby="rectangle-resizer-header"
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      className="p-3"
     >
-      <div style={{ marginBottom: "20px" }}>
-        <h1 id="rectangle-resizer-header">Rectangle Resizer</h1>
-        <p role="alert" style={{ color: "red", minHeight: "1em" }}>
-          {error}
-        </p>
-        <p style={{ minHeight: "1em" }}>{loading && "Loading..."}</p>
-        <div style={{ marginTop: "10px" }}>
-          <label style={{ marginRight: "10px" }}>
-            Width:
-            <input
-              type="number"
-              name="width"
-              value={dimensions.width}
-              onChange={handleInputChange}
-              data-testid="input-width"
-              style={{ marginLeft: "5px" }}
-            />{" "}
-            px
-          </label>
-          <label>
-            Height:
-            <input
-              type="number"
-              name="height"
-              value={dimensions.height}
-              onChange={handleInputChange}
-              data-testid="input-height"
-              style={{ marginLeft: "5px" }}
-            />{" "}
-            px
-          </label>
-        </div>
-        <p data-testid="perimeter">
-          Perimeter: {2 * (dimensions.width + dimensions.height)} px
-        </p>
+      <h1 id="rectangle-resizer-header" className="card-title">
+        Rectangle Resizer
+      </h1>
+      <p role="alert" className="text-danger" style={{ minHeight: "1em" }}>
+        {error}
+      </p>
+      <p style={{ minHeight: "1em" }}>{loading && "Loading..."}</p>
+      <div className="form-group">
+        <label className="mr-2">
+          Width:
+          <input
+            type="number"
+            name="width"
+            value={dimensions.width}
+            onChange={handleInputChange}
+            data-testid="input-width"
+            className="form-control d-inline-block ml-2"
+            style={{ width: "100px" }}
+          />{" "}
+          px
+        </label>
+        <label>
+          Height:
+          <input
+            type="number"
+            name="height"
+            value={dimensions.height}
+            onChange={handleInputChange}
+            data-testid="input-height"
+            className="form-control d-inline-block ml-2"
+            style={{ width: "100px" }}
+          />{" "}
+          px
+        </label>
       </div>
+      <p data-testid="perimeter">
+        Perimeter: {2 * (dimensions.width + dimensions.height)} px
+      </p>
       <div
         ref={rectangleRef}
         onMouseDown={handleDrag}
         data-testid="rectangle"
+        className="position-relative"
         style={{
-          position: "relative",
           left: position.x,
           top: position.y,
           width: dimensions.width,
           height: dimensions.height,
-          border: `2px solid ${error ? "red" : "blue"}`,
           backgroundColor: error ? "lightcoral" : "lightblue",
           cursor: "move",
+          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)", // Add shadow for visual cue
         }}
         role="region"
         aria-label={`Rectangle at ${position.x}, ${position.y} with width ${dimensions.width}px and height ${dimensions.height}px`}
