@@ -65,6 +65,9 @@ const RectangleResizer: React.FC = () => {
         "https://localhost:7221/api/rectangle/update",
         newDimensions
       );
+
+      // Update dimensions state only if validation is successful
+      setDimensions(newDimensions);
     } catch (err: any) {
       setError(err.response?.data || "An error occurred.");
     } finally {
@@ -146,7 +149,6 @@ const RectangleResizer: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const newDimensions = { ...dimensions, [name]: Number(value) };
-    setDimensions(newDimensions);
     debouncedUpdateDimensions(newDimensions);
   };
 
