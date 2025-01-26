@@ -96,3 +96,16 @@ jest-coverage/
 *.lock
 .idea_modules/
 .history/
+
+# Ignore build outputs
+**/obj/Debug/net8.0/RectangleAPI.AssemblyInfoInputs.cache
+**/obj/Debug/net8.0/RectangleAPI.AssemblyInfo.cs
+
+# Ignore node_modules directory
+node_modules/
+
+# Ignore package-lock.json
+package-lock.json
+
+# Ignore rectangle.json
+#rectangle.json
