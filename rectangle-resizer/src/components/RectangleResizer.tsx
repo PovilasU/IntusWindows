@@ -68,38 +68,60 @@ const RectangleResizer: React.FC = () => {
 
   return (
     <div data-testid="rectangle-resizer">
-      <h1>Rectangle Resizer</h1>
-      <ErrorHandling error={error} />
       <div style={{ marginBottom: "20px" }}>
-        <p>Perimeter: {2 * (dimensions.width + dimensions.height)} px</p>
         {loading && (
           <div className="alert alert-info" role="alert">
             Validating...
           </div>
         )}
-        <div style={{ marginTop: "10px" }}>
-          <label>
-            Width:
+        <ErrorHandling error={error} />
+        <div
+          className="form-container"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            width: "200px",
+          }}
+        >
+          <div
+            className="form-group"
+            style={{ marginTop: "10px", width: "100%" }}
+          >
+            <p
+              className="font-weight-bold text-primary"
+              style={{ fontSize: "1.5rem", whiteSpace: "nowrap" }}
+            >
+              Perimeter: {2 * (dimensions.width + dimensions.height)} px
+            </p>
+            <label htmlFor="widthInput">Width (px):</label>
             <input
               type="number"
+              className="form-control"
+              id="widthInput"
               name="width"
               value={dimensions.width}
               onChange={handleInputChange}
               data-testid="input-width"
-            />{" "}
-            px
-          </label>
-          <label>
-            Height:
+              style={{ width: "100%" }}
+            />
+          </div>
+          <div
+            className="form-group"
+            style={{ marginTop: "10px", width: "100%" }}
+          >
+            <label htmlFor="heightInput">Height (px):</label>
             <input
               type="number"
+              className="form-control"
+              id="heightInput"
               name="height"
               value={dimensions.height}
               onChange={handleInputChange}
               data-testid="input-height"
-            />{" "}
-            px
-          </label>
+              style={{ width: "100%" }}
+            />
+          </div>
         </div>
       </div>
       <RectangleComponent

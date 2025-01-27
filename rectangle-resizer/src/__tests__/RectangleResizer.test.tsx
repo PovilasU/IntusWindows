@@ -65,7 +65,7 @@ describe("RectangleResizer Component", () => {
     fireEvent.change(heightInput, { target: { value: "150" } });
 
     await waitFor(() => {
-      //TODO check that ..
+      //TODO fix that ..
       // expect(screen.getByText("Validation error")).toBeInTheDocument();
       // expect(screen.getByTestId("rectangle")).toHaveStyle(
       //   "border: 2px solid red"

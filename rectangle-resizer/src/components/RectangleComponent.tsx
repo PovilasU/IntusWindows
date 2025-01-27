@@ -21,6 +21,7 @@ const RectangleComponent: React.FC<RectangleComponentProps> = ({
   // Handle resizing the rectangle
   const handleMouseDown = (e: React.MouseEvent, direction: string) => {
     e.stopPropagation();
+    e.preventDefault(); // Prevent default behavior to ensure proper event handling
     const startX = e.clientX;
     const startY = e.clientY;
     const startWidth = dimensions.width;
@@ -64,6 +65,8 @@ const RectangleComponent: React.FC<RectangleComponentProps> = ({
 
   // Handle dragging the rectangle
   const handleDrag = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault(); // Prevent default behavior to ensure proper event handling
     const startX = e.clientX;
     const startY = e.clientY;
     const startPos = { x: position.x, y: position.y };
@@ -112,6 +115,48 @@ const RectangleComponent: React.FC<RectangleComponentProps> = ({
             borderRadius: "50%",
             left: -5,
             top: -5,
+            cursor: "nwse-resize",
+          }}
+        />
+        <div
+          onMouseDown={(e) => handleMouseDown(e, "top-right")}
+          style={{
+            position: "absolute",
+            width: 10,
+            height: 10,
+            backgroundColor: "lightblue",
+            border: "1px solid grey",
+            borderRadius: "50%",
+            right: -5,
+            top: -5,
+            cursor: "nesw-resize",
+          }}
+        />
+        <div
+          onMouseDown={(e) => handleMouseDown(e, "bottom-left")}
+          style={{
+            position: "absolute",
+            width: 10,
+            height: 10,
+            backgroundColor: "lightblue",
+            border: "1px solid grey",
+            borderRadius: "50%",
+            left: -5,
+            bottom: -5,
+            cursor: "nesw-resize",
+          }}
+        />
+        <div
+          onMouseDown={(e) => handleMouseDown(e, "bottom-right")}
+          style={{
+            position: "absolute",
+            width: 10,
+            height: 10,
+            backgroundColor: "lightblue",
+            border: "1px solid grey",
+            borderRadius: "50%",
+            right: -5,
+            bottom: -5,
             cursor: "nwse-resize",
           }}
         />
