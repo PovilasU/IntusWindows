@@ -33,7 +33,28 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav"></ul>
+            <ul className="navbar-nav">
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  href="https://github.com/PovilasU/IntusWindows"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  GitHub
+                </a>
+              </li>
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  href="https://www.linkedin.com/in/povilas-urbonas-0a6a53a4/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  LinkedIn
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </nav>
