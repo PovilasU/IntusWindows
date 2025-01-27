@@ -72,7 +72,11 @@ const RectangleResizer: React.FC = () => {
       <ErrorHandling error={error} />
       <div style={{ marginBottom: "20px" }}>
         <p>Perimeter: {2 * (dimensions.width + dimensions.height)} px</p>
-        {loading && <p>Validating...</p>}
+        {loading && (
+          <div className="alert alert-info" role="alert">
+            Validating...
+          </div>
+        )}
         <div style={{ marginTop: "10px" }}>
           <label>
             Width:
