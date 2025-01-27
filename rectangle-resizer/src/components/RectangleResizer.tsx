@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "../services/api";
 import { Rectangle } from "../types/Rectangle";
-import { Properties } from "csstype";
+import RectangleComponent from "./RectangleComponent.tsx";
 
 const RectangleResizer: React.FC = () => {
   const [dimensions, setDimensions] = useState<Rectangle>({
@@ -11,7 +11,6 @@ const RectangleResizer: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [dragging, setDragging] = useState(false);
 
   const dimensionsRef = useRef(dimensions);
   const positionRef = useRef(position);
@@ -54,73 +53,6 @@ const RectangleResizer: React.FC = () => {
     }
   };
 
-  const handleMouseDown = (e: React.MouseEvent, direction: string) => {
-    e.stopPropagation();
-    setDragging(true);
-    const startX = e.clientX;
-    const startY = e.clientY;
-    const startWidth = dimensions.width;
-    const startHeight = dimensions.height;
-    const startPos = { x: position.x, y: position.y };
-
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      let newWidth = startWidth;
-      let newHeight = startHeight;
-      let newX = startPos.x;
-      let newY = startPos.y;
-
-      if (direction.includes("right")) {
-        newWidth = startWidth + (moveEvent.clientX - startX);
-      }
-      if (direction.includes("bottom")) {
-        newHeight = startHeight + (moveEvent.clientY - startY);
-      }
-      if (direction.includes("left")) {
-        newWidth = startWidth - (moveEvent.clientX - startX);
-        newX = startPos.x + (moveEvent.clientX - startX);
-      }
-      if (direction.includes("top")) {
-        newHeight = startHeight - (moveEvent.clientY - startY);
-        newY = startPos.y + (moveEvent.clientY - startY);
-      }
-
-      setDimensions({ width: newWidth, height: newHeight });
-      setPosition({ x: newX, y: newY });
-    };
-
-    const handleMouseUp = () => {
-      setDragging(false);
-      validateAndUpdateDimensions(); // Use the latest state from refs
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  };
-
-  const handleDrag = (e: React.MouseEvent) => {
-    const startX = e.clientX;
-    const startY = e.clientY;
-    const startPos = { x: position.x, y: position.y };
-
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      const newX = startPos.x + (moveEvent.clientX - startX);
-      const newY = startPos.y + (moveEvent.clientY - startY);
-      setPosition({ x: newX, y: newY });
-    };
-
-    const handleMouseUp = () => {
-      setDragging(false);
-      validateAndUpdateDimensions(); // Use the latest state from refs
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const updatedDimensions = {
@@ -161,36 +93,13 @@ const RectangleResizer: React.FC = () => {
           </label>
         </div>
       </div>
-      <div style={{ position: "relative", width: "100%", height: "400px" }}>
-        <div
-          onMouseDown={handleDrag}
-          style={{
-            position: "absolute",
-            left: position.x,
-            top: position.y,
-            width: dimensions.width,
-            height: dimensions.height,
-            border: "2px solid blue",
-            cursor: "move",
-          }}
-        >
-          {/* Rectangle Resizing Handles */}
-          <div
-            onMouseDown={(e) => handleMouseDown(e, "top-left")}
-            style={{
-              position: "absolute",
-              width: 10,
-              height: 10,
-              backgroundColor: "lightblue",
-              border: "1px solid grey",
-              borderRadius: "50%",
-              left: -5,
-              top: -5,
-              cursor: "nwse-resize",
-            }}
-          />
-        </div>
-      </div>
+      <RectangleComponent
+        dimensions={dimensions}
+        setDimensions={setDimensions}
+        position={position}
+        setPosition={setPosition}
+        validateAndUpdateDimensions={validateAndUpdateDimensions}
+      />
     </div>
   );
 };
