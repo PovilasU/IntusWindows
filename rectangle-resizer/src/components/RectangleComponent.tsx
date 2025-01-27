@@ -85,7 +85,7 @@ const RectangleComponent: React.FC<RectangleComponentProps> = ({
   };
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "400px" }}>
+    <section style={{ position: "relative", width: "100%", height: "400px" }}>
       <div
         ref={rectangleRef}
         onMouseDown={handleDrag}
@@ -98,6 +98,7 @@ const RectangleComponent: React.FC<RectangleComponentProps> = ({
           border: "2px solid blue",
           cursor: "move",
         }}
+        data-testid="rectangle"
       >
         {/* Rectangle Resizing Handles */}
         <div
@@ -115,7 +116,7 @@ const RectangleComponent: React.FC<RectangleComponentProps> = ({
           }}
         />
       </div>
-    </div>
+    </section>
   );
 };
 

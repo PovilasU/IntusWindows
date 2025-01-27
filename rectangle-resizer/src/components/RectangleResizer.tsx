@@ -67,7 +67,7 @@ const RectangleResizer: React.FC = () => {
   };
 
   return (
-    <div>
+    <div data-testid="rectangle-resizer">
       <h1>Rectangle Resizer</h1>
       <ErrorHandling error={error} />
       <div style={{ marginBottom: "20px" }}>
@@ -81,6 +81,7 @@ const RectangleResizer: React.FC = () => {
               name="width"
               value={dimensions.width}
               onChange={handleInputChange}
+              data-testid="input-width"
             />{" "}
             px
           </label>
@@ -91,6 +92,7 @@ const RectangleResizer: React.FC = () => {
               name="height"
               value={dimensions.height}
               onChange={handleInputChange}
+              data-testid="input-height"
             />{" "}
             px
           </label>
