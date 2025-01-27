@@ -18,7 +18,7 @@ const RectangleComponent: React.FC<RectangleComponentProps> = ({
 }) => {
   const rectangleRef = useRef<HTMLDivElement>(null);
 
-  // Handle resizing the rectangle.
+  // Handle resizing the rectangle
   const handleMouseDown = (e: React.MouseEvent, direction: string) => {
     e.stopPropagation();
     const startX = e.clientX;

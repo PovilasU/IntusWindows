@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "../services/api";
 import { Rectangle } from "../types/Rectangle";
 import RectangleComponent from "./RectangleComponent";
-import ErrorHandling from "./ErrorHandling.tsx";
+import ErrorHandling from "./ErrorHandling";
 
 const RectangleResizer: React.FC = () => {
   const [dimensions, setDimensions] = useState<Rectangle>({
@@ -24,6 +24,7 @@ const RectangleResizer: React.FC = () => {
         dimensionsRef.current = response.data; // Update ref
       } catch (err) {
         console.error("Error fetching dimensions:", err);
+        setError("Failed to fetch dimensions.");
       }
     };
 
@@ -48,6 +49,7 @@ const RectangleResizer: React.FC = () => {
       await axios.post("/rectangle/validate", dimensionsRef.current);
       await axios.post("/rectangle/update", dimensionsRef.current);
     } catch (err: any) {
+      console.error("Error validating/updating dimensions:", err);
       setError(err.response?.data || "An error occurred.");
     } finally {
       setLoading(false);
