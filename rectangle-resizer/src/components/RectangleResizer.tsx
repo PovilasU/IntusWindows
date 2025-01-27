@@ -1,32 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
 import axios from "../services/api";
 import { Rectangle } from "../types/Rectangle";
 import RectangleComponent from "./RectangleComponent";
 import ErrorHandling from "./ErrorHandling";
-
-const Container = styled.div`
-  margin-bottom: 20px;
-`;
-
-const FormContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 200px;
-`;
-
-const FormGroup = styled.div`
-  margin-top: 10px;
-  width: 100%;
-`;
-
-const Perimeter = styled.p`
-  font-weight: bold;
-  color: #007bff;
-  font-size: 1.5rem;
-  white-space: nowrap;
-`;
+import {
+  Container,
+  FormContainer,
+  FormGroup,
+  Perimeter,
+} from "./RectangleResizerStyles";
 
 const RectangleResizer: React.FC = () => {
   const [dimensions, setDimensions] = useState<Rectangle>({
@@ -104,7 +86,6 @@ const RectangleResizer: React.FC = () => {
             <Perimeter>
               Perimeter: {2 * (dimensions.width + dimensions.height)} px
             </Perimeter>
-
             <label htmlFor="widthInput">Width (px):</label>
             <input
               type="number"
