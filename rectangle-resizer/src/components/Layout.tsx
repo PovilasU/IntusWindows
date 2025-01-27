@@ -54,6 +54,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   LinkedIn
                 </a>
               </li>
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  href="https://porfolio-povilas.netlify.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Portfolio
+                </a>
+              </li>
             </ul>
           </div>
         </div>
