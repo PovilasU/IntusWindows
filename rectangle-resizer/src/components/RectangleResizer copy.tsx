@@ -3,6 +3,26 @@ import axios from "../services/api";
 import { Rectangle } from "../types/Rectangle";
 import { Properties } from "csstype";
 
+const handleStyle: Properties<string | number> = {
+  position: "absolute",
+  width: 10,
+  height: 10,
+  backgroundColor: "lightblue",
+  border: "1px solid grey",
+  borderRadius: "50%",
+  cursor: "nwse-resize",
+};
+
+const inputContainerStyle: Properties<string | number> = {
+  display: "flex",
+  alignItems: "center",
+  marginRight: "10px",
+};
+
+const inputStyle: Properties<string | number> = {
+  marginLeft: "5px",
+};
+
 const RectangleResizer: React.FC = () => {
   const [dimensions, setDimensions] = useState<Rectangle>({
     width: 100,
@@ -10,18 +30,15 @@ const RectangleResizer: React.FC = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const rectangleRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [dragging, setDragging] = useState(false);
 
-  const dimensionsRef = useRef(dimensions);
-  const positionRef = useRef(position);
-
+  // Fetch initial dimensions from the API
   useEffect(() => {
     const fetchDimensions = async () => {
       try {
         const response = await axios.get<Rectangle>("/rectangle");
         setDimensions(response.data);
-        dimensionsRef.current = response.data; // Update ref
       } catch (err) {
         console.error("Error fetching dimensions:", err);
       }
@@ -30,33 +47,9 @@ const RectangleResizer: React.FC = () => {
     fetchDimensions();
   }, []);
 
-  // Sync state to refs
-  useEffect(() => {
-    dimensionsRef.current = dimensions;
-  }, [dimensions]);
-
-  useEffect(() => {
-    positionRef.current = position;
-  }, [position]);
-
-  const validateAndUpdateDimensions = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      // Use refs to ensure the latest values are sent
-      await axios.post("/rectangle/validate", dimensionsRef.current);
-      await axios.post("/rectangle/update", dimensionsRef.current);
-    } catch (err: any) {
-      setError(err.response?.data || "An error occurred.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Handle resizing the rectangle
   const handleMouseDown = (e: React.MouseEvent, direction: string) => {
     e.stopPropagation();
-    setDragging(true);
     const startX = e.clientX;
     const startY = e.clientY;
     const startWidth = dimensions.width;
@@ -89,8 +82,6 @@ const RectangleResizer: React.FC = () => {
     };
 
     const handleMouseUp = () => {
-      setDragging(false);
-      validateAndUpdateDimensions(); // Use the latest state from refs
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
@@ -99,6 +90,7 @@ const RectangleResizer: React.FC = () => {
     document.addEventListener("mouseup", handleMouseUp);
   };
 
+  // Handle dragging the rectangle
   const handleDrag = (e: React.MouseEvent) => {
     const startX = e.clientX;
     const startY = e.clientY;
@@ -111,8 +103,6 @@ const RectangleResizer: React.FC = () => {
     };
 
     const handleMouseUp = () => {
-      setDragging(false);
-      validateAndUpdateDimensions(); // Use the latest state from refs
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
@@ -121,15 +111,36 @@ const RectangleResizer: React.FC = () => {
     document.addEventListener("mouseup", handleMouseUp);
   };
 
+  // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const updatedDimensions = {
-      ...dimensions,
+    setDimensions((prev) => ({
+      ...prev,
       [name]: Number(value),
-    };
-    setDimensions(updatedDimensions);
-    dimensionsRef.current = updatedDimensions; // Update ref immediately
+    }));
   };
+
+  // Use effect to handle API calls for validating and updating dimensions
+  useEffect(() => {
+    const validateAndUpdateDimensions = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        // Validate dimensions
+        await axios.post("/rectangle/validate", dimensions);
+
+        // Update dimensions in the backend
+        await axios.post("/rectangle/update", dimensions);
+      } catch (err: any) {
+        setError(err.response?.data || "An error occurred.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    validateAndUpdateDimensions();
+  }, [dimensions]);
 
   return (
     <div>
@@ -139,30 +150,35 @@ const RectangleResizer: React.FC = () => {
         <p>Perimeter: {2 * (dimensions.width + dimensions.height)} px</p>
         {loading && <p>Validating...</p>}
         <div style={{ marginTop: "10px" }}>
-          <label>
+          <label style={inputContainerStyle}>
             Width:
             <input
               type="number"
               name="width"
               value={dimensions.width}
               onChange={handleInputChange}
+              style={inputStyle}
+              data-testid="input-width"
             />{" "}
             px
           </label>
-          <label>
+          <label style={inputContainerStyle}>
             Height:
             <input
               type="number"
               name="height"
               value={dimensions.height}
               onChange={handleInputChange}
+              style={inputStyle}
+              data-testid="input-height"
             />{" "}
             px
           </label>
         </div>
       </div>
-      <div style={{ position: "relative", width: "100%", height: "400px" }}>
+      <section style={{ position: "relative", width: "100%", height: "400px" }}>
         <div
+          ref={rectangleRef}
           onMouseDown={handleDrag}
           style={{
             position: "absolute",
@@ -174,23 +190,42 @@ const RectangleResizer: React.FC = () => {
             cursor: "move",
           }}
         >
-          {/* Rectangle Resizing Handles */}
+          <svg width="100%" height="100%" role="img">
+            <rect width="100%" height="100%" fill="lightblue" />
+          </svg>
           <div
             onMouseDown={(e) => handleMouseDown(e, "top-left")}
+            style={{ ...handleStyle, left: -5, top: -5, cursor: "nwse-resize" }}
+          />
+          <div
+            onMouseDown={(e) => handleMouseDown(e, "top-right")}
             style={{
-              position: "absolute",
-              width: 10,
-              height: 10,
-              backgroundColor: "lightblue",
-              border: "1px solid grey",
-              borderRadius: "50%",
-              left: -5,
+              ...handleStyle,
+              right: -5,
               top: -5,
+              cursor: "nesw-resize",
+            }}
+          />
+          <div
+            onMouseDown={(e) => handleMouseDown(e, "bottom-left")}
+            style={{
+              ...handleStyle,
+              left: -5,
+              bottom: -5,
+              cursor: "nesw-resize",
+            }}
+          />
+          <div
+            onMouseDown={(e) => handleMouseDown(e, "bottom-right")}
+            style={{
+              ...handleStyle,
+              right: -5,
+              bottom: -5,
               cursor: "nwse-resize",
             }}
           />
         </div>
-      </div>
+      </section>
     </div>
   );
 };
