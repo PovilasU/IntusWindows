@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "../services/api";
 import { Rectangle } from "../types/Rectangle";
-import RectangleComponent from "./RectangleComponent.tsx";
+import RectangleComponent from "./RectangleComponent";
+import ErrorHandling from "./ErrorHandling.tsx";
 
 const RectangleResizer: React.FC = () => {
   const [dimensions, setDimensions] = useState<Rectangle>({
@@ -66,7 +67,7 @@ const RectangleResizer: React.FC = () => {
   return (
     <div>
       <h1>Rectangle Resizer</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <ErrorHandling error={error} />
       <div style={{ marginBottom: "20px" }}>
         <p>Perimeter: {2 * (dimensions.width + dimensions.height)} px</p>
         {loading && <p>Validating...</p>}
