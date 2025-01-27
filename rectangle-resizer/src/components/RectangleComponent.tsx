@@ -78,7 +78,6 @@ const RectangleComponent: React.FC<RectangleComponentProps> = ({
     };
 
     const handleMouseUp = () => {
-      validateAndUpdateDimensions(); // Use the latest state from refs
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
