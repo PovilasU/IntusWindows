@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { Rectangle } from "../types/Rectangle";
+import "./RectangleComponent.css"; // Import the CSS file
 
 interface RectangleComponentProps {
   dimensions: Rectangle;
@@ -87,77 +88,35 @@ const RectangleComponent: React.FC<RectangleComponentProps> = ({
   };
 
   return (
-    <section style={{ position: "relative", width: "100%", height: "400px" }}>
+    <section className="rectangle-container">
       <div
         ref={rectangleRef}
         onMouseDown={handleDrag}
+        className="rectangle"
         style={{
-          position: "absolute",
           left: position.x,
           top: position.y,
           width: dimensions.width,
           height: dimensions.height,
-          border: "2px solid blue",
-          cursor: "move",
         }}
         data-testid="rectangle"
       >
         {/* Rectangle Resizing Handles */}
         <div
           onMouseDown={(e) => handleMouseDown(e, "top-left")}
-          style={{
-            position: "absolute",
-            width: 10,
-            height: 10,
-            backgroundColor: "lightblue",
-            border: "1px solid grey",
-            borderRadius: "50%",
-            left: -5,
-            top: -5,
-            cursor: "nwse-resize",
-          }}
+          className="resize-handle top-left"
         />
         <div
           onMouseDown={(e) => handleMouseDown(e, "top-right")}
-          style={{
-            position: "absolute",
-            width: 10,
-            height: 10,
-            backgroundColor: "lightblue",
-            border: "1px solid grey",
-            borderRadius: "50%",
-            right: -5,
-            top: -5,
-            cursor: "nesw-resize",
-          }}
+          className="resize-handle top-right"
         />
         <div
           onMouseDown={(e) => handleMouseDown(e, "bottom-left")}
-          style={{
-            position: "absolute",
-            width: 10,
-            height: 10,
-            backgroundColor: "lightblue",
-            border: "1px solid grey",
-            borderRadius: "50%",
-            left: -5,
-            bottom: -5,
-            cursor: "nesw-resize",
-          }}
+          className="resize-handle bottom-left"
         />
         <div
           onMouseDown={(e) => handleMouseDown(e, "bottom-right")}
-          style={{
-            position: "absolute",
-            width: 10,
-            height: 10,
-            backgroundColor: "lightblue",
-            border: "1px solid grey",
-            borderRadius: "50%",
-            right: -5,
-            bottom: -5,
-            cursor: "nwse-resize",
-          }}
+          className="resize-handle bottom-right"
         />
       </div>
     </section>

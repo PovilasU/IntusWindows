@@ -1,0 +1,44 @@
+.rectangle-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+  }
+  
+  .rectangle {
+    position: absolute;
+    border: 2px solid blue;
+    cursor: move;
+  }
+  
+  .resize-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: lightblue;
+    border: 1px solid grey;
+    border-radius: 50%;
+  }
+  
+  .resize-handle.top-left {
+    left: -5px;
+    top: -5px;
+    cursor: nwse-resize;
+  }
+  
+  .resize-handle.top-right {
+    right: -5px;
+    top: -5px;
+    cursor: nesw-resize;
+  }
+  
+  .resize-handle.bottom-left {
+    left: -5px;
+    bottom: -5px;
+    cursor: nesw-resize;
+  }
+  
+  .resize-handle.bottom-right {
+    right: -5px;
+    bottom: -5px;
+    cursor: nwse-resize;
+  }
