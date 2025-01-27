@@ -17,13 +17,17 @@ This project is a webpage for drawing and resizing a rectangle SVG figure. It di
 - C# (backend for JSON handling and saving through API)
 - Axios (for API requests)
 - @testing-library/react and jest (for testing)
+- styled-components (for styling)
+- Bootstrap (for styling)
+- Vite (for React application bundling)
+- Vite Test (for testing)
 
 ## Installation
 
 1. Clone the repository:
 
    ```sh
-   git clone https://github.com/your-username/rectangle-resizer.git
+   git clone https://github.com/PovilasU/IntusWindows.git
    cd rectangle-resizer
    ```
 
@@ -34,15 +38,15 @@ This project is a webpage for drawing and resizing a rectangle SVG figure. It di
    npm install
    ```
 
-3. Install backend dependencies:
+3. Install RectangleAPI dependencies:
    ```sh
-   cd ../backend
+   cd ../RectangleAPI
    dotnet restore
    ```
 
 ## Running the Application
 
-1. Start the backend server:
+1. Start the RectangleAPI server:
 
    ```sh
    cd backend
@@ -86,7 +90,8 @@ The ports for the .NET API and the React application might be different on your 
 For the .NET API:
 
 ```tsx
-await axios.post("https://localhost:7221/api/rectangle/update", dimensions);
+rectagle-resizer/src/services/api.tsx  change port here
+https://localhost:7221/api
 ```
 
 For the React application:
