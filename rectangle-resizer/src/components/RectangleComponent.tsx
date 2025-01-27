@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { Rectangle } from "../types/Rectangle";
-import "./RectangleComponent.css"; // Import the CSS file
+import "../styles/RectangleComponent.css"; // Import the CSS file
 
 interface RectangleComponentProps {
   dimensions: Rectangle;
