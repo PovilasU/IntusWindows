@@ -14,8 +14,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <span
               style={{
                 fontWeight: "bold",
-                fontSize: "1.5rem",
-                color: "#007bff",
+                fontSize: "2rem",
+                color: "#0056b3",
               }}
             >
               Rectangle Resizer

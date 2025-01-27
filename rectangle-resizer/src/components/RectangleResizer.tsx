@@ -1,8 +1,32 @@
 import React, { useState, useEffect, useRef } from "react";
+import styled from "styled-components";
 import axios from "../services/api";
 import { Rectangle } from "../types/Rectangle";
 import RectangleComponent from "./RectangleComponent";
 import ErrorHandling from "./ErrorHandling";
+
+const Container = styled.div`
+  margin-bottom: 20px;
+`;
+
+const FormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 200px;
+`;
+
+const FormGroup = styled.div`
+  margin-top: 10px;
+  width: 100%;
+`;
+
+const Perimeter = styled.p`
+  font-weight: bold;
+  color: #007bff;
+  font-size: 1.5rem;
+  white-space: nowrap;
+`;
 
 const RectangleResizer: React.FC = () => {
   const [dimensions, setDimensions] = useState<Rectangle>({
@@ -68,32 +92,19 @@ const RectangleResizer: React.FC = () => {
 
   return (
     <div data-testid="rectangle-resizer">
-      <div style={{ marginBottom: "20px" }}>
+      <Container>
         {loading && (
           <div className="alert alert-info" role="alert">
             Validating...
           </div>
         )}
         <ErrorHandling error={error} />
-        <div
-          className="form-container"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            width: "200px",
-          }}
-        >
-          <div
-            className="form-group"
-            style={{ marginTop: "10px", width: "100%" }}
-          >
-            <p
-              className="font-weight-bold text-primary"
-              style={{ fontSize: "1.5rem", whiteSpace: "nowrap" }}
-            >
+        <FormContainer>
+          <FormGroup>
+            <Perimeter>
               Perimeter: {2 * (dimensions.width + dimensions.height)} px
-            </p>
+            </Perimeter>
+
             <label htmlFor="widthInput">Width (px):</label>
             <input
               type="number"
@@ -105,11 +116,8 @@ const RectangleResizer: React.FC = () => {
               data-testid="input-width"
               style={{ width: "100%" }}
             />
-          </div>
-          <div
-            className="form-group"
-            style={{ marginTop: "10px", width: "100%" }}
-          >
+          </FormGroup>
+          <FormGroup>
             <label htmlFor="heightInput">Height (px):</label>
             <input
               type="number"
@@ -121,9 +129,9 @@ const RectangleResizer: React.FC = () => {
               data-testid="input-height"
               style={{ width: "100%" }}
             />
-          </div>
-        </div>
-      </div>
+          </FormGroup>
+        </FormContainer>
+      </Container>
       <RectangleComponent
         dimensions={dimensions}
         setDimensions={setDimensions}
